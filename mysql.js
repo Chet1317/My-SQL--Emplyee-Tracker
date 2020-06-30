@@ -1,7 +1,8 @@
-const mysql = require ("mysql");require('dotenv').config()
+require('dotenv').config()
 
 const mysql = require("mysql");
 const inquirer = require("inquirer");
+const { async } = require('rxjs/internal/scheduler/async');
 
 class Database {
   constructor( config ) {
@@ -35,3 +36,8 @@ close() {
     database: process.env.DB_NAME,
     insecureAuth : true
   });
+
+  async function mainApp(){
+      const userList = db.query( "SELECT * FROM users")
+  }
+  mainApp()
