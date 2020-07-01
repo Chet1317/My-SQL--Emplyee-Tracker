@@ -42,9 +42,15 @@ close() {
   async function mainApp(){
      questions = await inquirer.prompt([{name:"response1", message:"What would you like to manage?", type:"list", 
     choices:["Departments", "Roles", "Employees"]}])
-    
-    
+     
     let employerList = await db.query( "SELECT * FROM employee")
-     console.log(employerList)
+    console.table(employerList)
+
+    if(questions.response1 == "Employees"){
+        questions= await inquirer.prompt([{name:"response2", message:"What would you like to do?", type:"list", 
+        choices:["Add Employees", "Veiw Employees", "Update Employee Roles"]}])
+    }
+    
+    
   }
   mainApp()
