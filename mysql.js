@@ -38,6 +38,6 @@ close() {
   });
 
   async function mainApp(){
-      const userList = db.query( "SELECT * FROM users")
+     let employerList = await db.query( "SELECT * FROM employee")
   }
   mainApp()
