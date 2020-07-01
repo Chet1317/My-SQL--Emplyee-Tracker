@@ -47,8 +47,11 @@ close() {
     console.table(employerList)
 
     if(questions.response1 == "Employees"){
-        questions= await inquirer.prompt([{name:"response2", message:"What would you like to do?", type:"list", 
-        choices:["Add Employees", "Veiw Employees", "Update Employee Roles"]}])
+        questions= await inquirer.prompt([{name:"response1", message:"What would you like to do?", type:"list", 
+        choices:[{name:"Add Employees",value:"add"},
+        {name: "View Employees", value:"view"},
+        {name:"Update Employee Roles",value:"update"}
+    ]}])
     }
     
     
