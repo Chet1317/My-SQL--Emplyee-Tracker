@@ -37,8 +37,14 @@ close() {
     insecureAuth : true
   });
 
+  let questions
+
   async function mainApp(){
-     let employerList = await db.query( "SELECT * FROM employee")
+     questions = await inquirer.prompt([{name:"response1", message:"What would you like to manage?", type:"list", 
+    choices:["Departments", "Roles", "Employees"]}])
+    
+    
+    let employerList = await db.query( "SELECT * FROM employee")
      console.log(employerList)
   }
   mainApp()
