@@ -39,5 +39,6 @@ close() {
 
   async function mainApp(){
      let employerList = await db.query( "SELECT * FROM employee")
+     console.log(employerList)
   }
   mainApp()
