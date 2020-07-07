@@ -38,7 +38,7 @@ const db = new Database({
 });
 
 let answers
-let roles
+let roles, department
 
 async function mainApp() {
 
@@ -47,8 +47,14 @@ async function mainApp() {
         choices: ["Departments", "Roles", "Employees"]
     }])
 
-    let employerList = await db.query("SELECT * FROM employee")
-    console.table(employerList)
+
+    if( answers.managementOptions=="Employees" ){
+        let employerList = await db.query( 
+            "SELECT CONCAT(e.first_name,' ',e.last_name) AS employeeName,"+
+            "CONCAT(m.first_name,' ',m.last_name) AS managerName,r.title,r.salary "+
+            "FROM employee AS e "+
+            "LEFT JOIN employee AS m ON(e.manager_id=m.id) "+
+            "LEFT JOIN role AS r ON(e.role_id=r.id)" )
 
     if (answers.managementOptions == "Employees") {
         answers = await inquirer.prompt([{
@@ -64,6 +70,12 @@ async function mainApp() {
             dbRole.forEach( function( item ){
                 roles.push( { name: item.title, value: item.id } )
             })
+            if (answers.employeeOptions == "add"){
+                const dbRole = await db.query( "SELECT * FROM department")
+                    department = []
+                    dbRole.forEach( function( item ){
+                        department.push( { name: item.name, value: item.id } )
+                    })
     }
         
         console.log(answers)
@@ -84,12 +96,19 @@ async function mainApp() {
                     message: "What is their role?",
                     type: "list",
                     choices:roles
+                },
+                {
+                    name: "employeeDepartment",
+                    message: "What is their department?",
+                    type: "list",
+                    choices:department
                 }
             ])
-            let employerList = await db.query("INSERT INTO employee VALUES (?, ?, ?, ?, ?)", [0, answers.employeeName, answers.employeeLastName, answers.employeeRole, 1])
+            let employerList = await db.query("INSERT INTO employee VALUES (?, ?, ?, ?, ?)", [0, answers.employeeName, answers.employeeLastName, answers.employeeRole, answers.employeeDepartment, 1])
             console.table(employerList)
         }
     }
 }
 
+}
 mainApp()
