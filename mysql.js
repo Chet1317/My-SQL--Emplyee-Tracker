@@ -48,29 +48,63 @@ async function mainApp() {
     }])
 
 
-    if( answers.managementOptions=="Employees" ){
+   if( answers.managementOptions=="Departments" ){
         let employerList = await db.query( 
             "SELECT CONCAT(e.first_name,' ',e.last_name) AS employeeName,"+
             "CONCAT(m.first_name,' ',m.last_name) AS managerName,r.title,r.salary "+
             "FROM employee AS e "+
             "LEFT JOIN employee AS m ON(e.manager_id=m.id) "+
-            "LEFT JOIN role AS r ON(e.role_id=r.id)" )
+            "LEFT JOIN role AS r ON(e.role_id=r.id)") 
+            console.table( employerList )
 
-    if (answers.managementOptions == "Employees") {
-        answers = await inquirer.prompt([{
-            name: "employeeOptions", message: "What would you like to do?", type: "list",
+            answers = await inquirer.prompt([
+                {name: "managementOptions", message: "What would you like to do?", type: "list",
+                choices: [{ name: "Add Employees", value: "add" },
+                { name: "View Employees", value: "view" },
+                { name: "Update Employee Roles", value: "update" }
+                ]
+                }])
+    
+   if( answers.managementOptions=="Employees" ){
+    let employerList1 = await db.query( 
+        "SELECT CONCAT(e.first_name,' ',e.last_name) AS employeeName,"+
+        "CONCAT(m.first_name,' ',m.last_name) AS managerName,r.title,r.salary "+
+        "FROM employee AS e "+
+        "LEFT JOIN employee AS m ON(e.manager_id=m.id) "+
+        "LEFT JOIN role AS r ON(e.role_id=r.id)") 
+        console.table( employerList1 )
+
+        answers = await inquirer.prompt([
+            {name: "managementOptions", message: "What would you like to do?", type: "list",
             choices: [{ name: "Add Employees", value: "add" },
             { name: "View Employees", value: "view" },
             { name: "Update Employee Roles", value: "update" }
             ]
-        }])
-    if (answers.employeeOptions == "add"){
+            }])
+        
+   if( answers.managementOptions=="Roles" ){
+    let employerList2 = await db.query( 
+        "SELECT CONCAT(e.first_name,' ',e.last_name) AS employeeName,"+
+        "CONCAT(m.first_name,' ',m.last_name) AS managerName,r.title,r.salary "+
+        "FROM employee AS e "+
+        "LEFT JOIN employee AS m ON(e.manager_id=m.id) "+
+        "LEFT JOIN role AS r ON(e.role_id=r.id)") 
+        console.table( employerList2 )
+                
+        answers = await inquirer.prompt([
+            {name: "managementOptions", message: "What would you like to do?", type: "list",
+            choices: [{ name: "Add Employees", value: "add" },
+            { name: "View Employees", value: "view" },
+            { name: "Update Employee Roles", value: "update" }
+            ]
+            }])
+    if (answers.managementOptions == "add"){
         const dbRole = await db.query( "SELECT * FROM role")
             roles = []
             dbRole.forEach( function( item ){
                 roles.push( { name: item.title, value: item.id } )
             })
-            if (answers.employeeOptions == "add"){
+            if (answers.managementOptions == "add"){
                 const dbRole = await db.query( "SELECT * FROM department")
                     department = []
                     dbRole.forEach( function( item ){
@@ -79,7 +113,7 @@ async function mainApp() {
     }
         
         console.log(answers)
-        if (answers.employeeOptions == "add") {
+        if (answers.managementOptions == "add") {
             answers = await inquirer.prompt([
                 {
                     name: "employeeName",
@@ -109,6 +143,8 @@ async function mainApp() {
         }
     }
 }
-
+   }
 }
+}
+
 mainApp()
