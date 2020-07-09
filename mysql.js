@@ -43,29 +43,11 @@ let roles, department
 async function mainApp() {
 
     answers = await inquirer.prompt([{
-        name: "managementOptions", message: "What would you like to manage?", type: "list",
-        choices: ["Departments", "Roles", "Employees"]
+        name: "managementOptions", message: "What would you like to manage/view?", type: "list",
+        choices: ["View Departments", "View Roles", "View Employees"]
     }])
 
-
-   if( answers.managementOptions=="Departments" ){
-        let employerList = await db.query( 
-            "SELECT CONCAT(e.first_name,' ',e.last_name) AS employeeName,"+
-            "CONCAT(m.first_name,' ',m.last_name) AS managerName,r.title,r.salary "+
-            "FROM employee AS e "+
-            "LEFT JOIN employee AS m ON(e.manager_id=m.id) "+
-            "LEFT JOIN role AS r ON(e.role_id=r.id)") 
-            console.table( employerList )
-
-            answers = await inquirer.prompt([
-                {name: "managementOptions", message: "What would you like to do?", type: "list",
-                choices: [{ name: "Add Employees", value: "add" },
-                { name: "View Employees", value: "view" },
-                { name: "Update Employee Roles", value: "update" }
-                ]
-                }])
-    
-   if( answers.managementOptions=="Employees" ){
+   if( answers.managementOptions=="Employees","Departmets","Roles" ){
     let employerList1 = await db.query( 
         "SELECT CONCAT(e.first_name,' ',e.last_name) AS employeeName,"+
         "CONCAT(m.first_name,' ',m.last_name) AS managerName,r.title,r.salary "+
@@ -77,27 +59,10 @@ async function mainApp() {
         answers = await inquirer.prompt([
             {name: "managementOptions", message: "What would you like to do?", type: "list",
             choices: [{ name: "Add Employees", value: "add" },
-            { name: "View Employees", value: "view" },
             { name: "Update Employee Roles", value: "update" }
             ]
             }])
-        
-   if( answers.managementOptions=="Roles" ){
-    let employerList2 = await db.query( 
-        "SELECT CONCAT(e.first_name,' ',e.last_name) AS employeeName,"+
-        "CONCAT(m.first_name,' ',m.last_name) AS managerName,r.title,r.salary "+
-        "FROM employee AS e "+
-        "LEFT JOIN employee AS m ON(e.manager_id=m.id) "+
-        "LEFT JOIN role AS r ON(e.role_id=r.id)") 
-        console.table( employerList2 )
-                
-        answers = await inquirer.prompt([
-            {name: "managementOptions", message: "What would you like to do?", type: "list",
-            choices: [{ name: "Add Employees", value: "add" },
-            { name: "View Employees", value: "view" },
-            { name: "Update Employee Roles", value: "update" }
-            ]
-            }])
+    
     if (answers.managementOptions == "add"){
         const dbRole = await db.query( "SELECT * FROM role")
             roles = []
@@ -140,11 +105,35 @@ async function mainApp() {
             ])
             let employerList = await db.query("INSERT INTO employee VALUES (?, ?, ?, ?, ?)", [0, answers.employeeName, answers.employeeLastName, answers.employeeRole, answers.employeeDepartment, 1])
             console.table(employerList)
+        }              
         }
+        if (answers.managementOptions == "update"){
+            answers = await inquirer.prompt([
+                {
+                    name: "whichEmployee",
+                    message: "What is the index number of the employee who's role you would like to update?",
+                    type: "input"
+                }])
+        if(answers.managementOptions==""){
+        await db.query("SELECT * FROM role")
+        }
+            answers = await inquirer.prompt([
+            {
+                name: "whichEmployeeRole",
+                message: "What role would you like to give them?",
+                type: "list",
+                choices:[
+                    "Web Development", "Accountant", "Sales Rep", "Cleaner"
+                ]
+            }])
+            if(answers.whichEmployeeRole== "Web Development", "Accountant", "Sales Rep", "Cleaner"){
+               const employeeRoles= await db.query("UPDATE employee SET role_title WHERE role_id=?")
+                console.table(employeeRoles)
+            }
     }
 }
-   }
 }
-}
+
+
 
 mainApp()
