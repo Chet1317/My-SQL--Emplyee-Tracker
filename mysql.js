@@ -44,7 +44,7 @@ async function mainApp() {
 
     answers = await inquirer.prompt([{
         name: "managementOptions", message: "What would you like to manage/view?", type: "list",
-        choices: ["View Departments", "View Roles", "View Employees","add", "update", "View All"]
+        choices: ["View Departments", "View Roles", "View Employees","Add", "View All"]
     }])
 
     if( answers.managementOptions=="View Employees"){
@@ -64,13 +64,13 @@ async function mainApp() {
             "LEFT JOIN employee AS m ON(e.manager_id=m.id)"+
             "LEFT JOIN role AS r ON(e.role_id=r.id)")
         console.table(employerList1)
-    }else if (answers.managementOptions == "add"){
+    }else if (answers.managementOptions == "Add"){
         const dbRole = await db.query( "SELECT * FROM role")
             roles = []
             dbRole.forEach( function( item ){
                 roles.push( { name: item.title, value: item.id } )
             })
-            if (answers.managementOptions == "add"){
+            if (answers.managementOptions == "Add"){
                 const dbRole = await db.query( "SELECT * FROM department")
                     department = []
                     dbRole.forEach( function( item ){
@@ -81,7 +81,7 @@ async function mainApp() {
     }
         
         console.log(answers)
-        if (answers.managementOptions == "add") {
+        if (answers.managementOptions == "Add") {
             answers = await inquirer.prompt([
                 {
                     name: "employeeName",
@@ -110,34 +110,38 @@ async function mainApp() {
             console.table(employerList)
         }              
         }
-       
-        if (answers.managementOptions == "update"){
-            answers2 = await inquirer.prompt([
-                {
-                    name: "whichEmployee",
-                    message: "What is the name of the employee who's role you would like to update?",
-                    type: "input"
-                }])
-                //let firstName = await db.query("SELECT role_id FROM employee WHERE first_name=?", [answers2.whichEmployee])
-                //if(answers.roleId.whichEmployee == 'first_name'){
-                   //console.log(answers2.whichEmployee)
-                   //console.log(firstName)
-                    //}
-            answers2 = await inquirer.prompt([
-            {
-                name: "whichEmployeeRole",
-                message: "What role would you like to give them?",
-                type: "input"
-                
-            }])
-            let employeeRoles= await db.query("SELECT id FROM role WHERE title=?", [answers2.whichEmployeeRole])
-            console.table(employeeRoles)
+       mainApp()
 
-            let query= await db.query("UPDATE employee SET role_id =? WHERE first_name=?", [employeeRoles, answers2.whichEmployee])
-            console.table(query)
     }
+    mainApp();
 
- } //mainApp()
-//}
+
+//         if (answers.managementOptions == "update"){
+//             answers2 = await inquirer.prompt([
+//                 {
+//                     name: "whichEmployee",
+//                     message: "What is the name of the employee who's role you would like to update?",
+//                     type: "input"
+//                 }])
+//                 //let firstName = await db.query("SELECT role_id FROM employee WHERE first_name=?", [answers2.whichEmployee])
+//                 //if(answers.roleId.whichEmployee == 'first_name'){
+//                    //console.log(answers2.whichEmployee)
+//                    //console.log(firstName)
+//                     //}
+//             answers2 = await inquirer.prompt([
+//             {
+//                 name: "whichEmployeeRole",
+//                 message: "What role would you like to give them?",
+//                 type: "input"
+                
+//             }])
+//             let employeeRoles= await db.query("SELECT id FROM role WHERE title=?", [answers2.whichEmployeeRole])
+//             console.table(employeeRoles)
+
+//             let query= await db.query("UPDATE employee SET role_id =? WHERE first_name=?", [employeeRoles, answers2.whichEmployee])
+//             console.table(query)
+//     }
+
+//  } //mainApp()
+// //}
    
-mainApp();
